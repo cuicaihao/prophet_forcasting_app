@@ -1,13 +1,16 @@
-# forecastr
-A flask web app that leverages Facebook Prophet to provide people with the ability to build simple baseline forecasts from within a guided user interface.
+# Prophet Forecasting WebApp
+
+A flask web app that leverages Facebook Prophet and NeuralProphet to provide people with the ability to build simple baseline forecasts from within a guided user interface.
+
+Credits: this repo is originally forked from the [forecastr](https://github.com/garethcull/forecastr), I have made some changes to the code to make it work with the latest version of Prophet 2023 and hope to improved the backend function with the newly published [NeuralProphet](https://neuralprophet.com/). 
 
 ### Contents
 
-What is forecastr?<br/>
-How does this app work?<br/>
-Data Collection on the User Experience<br/>
-Requirements<br/>
-References<br/>
+1. [What is forecastr?](#What-is-forecastr?)
+2. [How does this app work?](#How-does-this-app-work?)
+3. [Data Collection on the User Experience](#Data-Collection-on-User-Experience)
+4. [Requirements](#Requirements)
+5. [References](#References)
 
 
 ### What is forecastr?
@@ -65,11 +68,9 @@ I've put together a few dashboards in Google Data Studio that review how users i
 - A summary report looking at kpis related to user acquisition, engagement, retention and growth.
 
 Feel free to review and copy them for your own clones / downloads of forecastr. 
+ 
 
-You can find these reports at: https://www.datanarrative.io/
-
-
-### Requirements<br/>
+### Requirements
 
 This app uses the following python libraries, which you will need to install:
 
@@ -88,7 +89,7 @@ On the client side:
 - jquery
 - bootstrap
 
-#### How to run this locally. 
+#### How to run this locally
 
 1. Clone this repo and make sure you install all of the above dependencies. 
 2. Open forecastr_v4.js and make sure that this line contains http:// and not https:// (which is used in production on heroku)
@@ -103,13 +104,12 @@ https://www.garethcull.com/2019/03/20/what-i-learned-building-a-ui-on-top-of-fac
 
 Here are some links that I found very useful:
 
-- Facebook Prophet: https://facebook.github.io/prophet/docs/quick_start.html#python-api
-- Flask: http://flask.pocoo.org/
-- SocketIO: https://flask-socketio.readthedocs.io/en/latest/
-- ChartJS: https://chartjs.org
-- Time Series Open Data Library: https://datamarket.com/data/list/?q=provider:tsdl
-- Stackoverflow: https://www.stackeroverflow.com
-- How to export data as a csv in javascript: https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/
-- Implementing Facebook Prophet Efficiently: https://towardsdatascience.com/implementing-facebook-prophet-efficiently-c241305405a3
-
-
+- [Facebook Prophet](https://facebook.github.io/prophet/docs/quick_start.html#python-api)
+- [Flask](http://flask.pocoo.org/)
+- [SocketIO](https://flask-socketio.readthedocs.io/en/latest/)
+- [ChartJS](https://chartjs.org)
+- [Time Series Open Data Library](https://datamarket.com/data/list/?q=provider:tsdl)
+- [Stackoverflow](https://www.stackeroverflow.com)
+- [How to export data as a csv in javascript](https://halistechnology.com/2015/05/28/use-javascript-to-export-your-data-as-csv/)
+- [Implementing Facebook Prophet Efficiently](https://towardsdatascience.com/implementing-facebook-prophet-efficiently-c241305405a3)
+- [what I Learned Building a UI on top of Facebook Prophet](https://www.garethcull.com/2019/03/20/what-i-learned-building-a-ui-on-top-of-facebook-prophet/)

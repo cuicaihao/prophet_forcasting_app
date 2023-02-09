@@ -5,13 +5,11 @@ from flask_socketio import SocketIO, emit
 import numpy as np
 import requests
 from datetime import datetime
-from fbprophet import Prophet
+from prophet import Prophet
 import pandas as pd
-from helper_v4 import forecastr,determine_timeframe,get_summary_stats,validate_model,preprocessing
+from helper_v4 import forecastr, determine_timeframe, get_summary_stats, validate_model, preprocessing
 import logging
 import time
-
-
 
 # Socket IO Flask App Setup
 
@@ -19,12 +17,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
 socketio = SocketIO(app, logger=False, engineio_logger=False)
 
-
 # Suppress logs except for error: https://stackoverflow.com/questions/43487264/disabling-logger-in-flask-socket-io
 logging.getLogger('socketio').setLevel(logging.ERROR)
 logging.getLogger('engineio').setLevel(logging.ERROR)
 logging.getLogger('geventwebsocket.handler').setLevel(logging.ERROR)
-
 
 
 @app.after_request
@@ -39,15 +35,18 @@ def add_header(r):
     r.headers['Cache-Control'] = 'public, max-age=0'
     return r
 
+
 # Flask App
+
 
 @app.route('/app/')
 def index():
-    return render_template('build-forecast-v3.html') # Application
+    return render_template('build-forecast-v3.html')  # Application
+
 
 @app.route('/')
 def about():
-    return render_template('forecastr.html') # Product Page
+    return render_template('forecastr.html')  # Product Page
 
 
 @socketio.on('connection_msg')
@@ -82,14 +81,16 @@ def forecast_settings(message):
     # Format the date and metric unit
     time_unit = column_headers[0]
     print(time_unit)
-    time_series_data[time_unit] = time_series_data[time_unit].apply(lambda x: pd.to_datetime(str(x)))
+    time_series_data[time_unit] = time_series_data[time_unit].apply(
+        lambda x: pd.to_datetime(str(x)))
     metric = column_headers[1]
 
     # y (aka as "the original data for the metric being forecasted") will be used in the chartjs line graph
     y = time_series_data[metric].tolist()
 
     # Use Facebook Prophet through forecastr method
-    forecast = forecastr(time_series_data,forecast_settings,column_headers,freq,build_settings)
+    forecast = forecastr(time_series_data, forecast_settings, column_headers,
+                         freq, build_settings)
 
     # Need to convert forecast back into a list / array for y, y_hat and date so it can be properly graphed with chartjs
     y_hat = forecast[0]
@@ -99,15 +100,14 @@ def forecast_settings(message):
     forecasted_vals = forecast[4]
     forecasted_vals_mean = forecast[5]
 
-
     # Send data back to the client
-    data_back_to_client = [dates,y_hat,y,forecast_settings,column_headers,freq,original_dataset,csv_export, forecasted_vals, forecasted_vals_mean]
+    data_back_to_client = [
+        dates, y_hat, y, forecast_settings, column_headers, freq,
+        original_dataset, csv_export, forecasted_vals, forecasted_vals_mean
+    ]
     #print(data_back_to_client)
 
-
     emit('render_forecast_chart', {'data': data_back_to_client})
-
-
 
     # Validate Model
     #mape_score = validate_model(model,dates)
@@ -141,8 +141,8 @@ def update_chart(message):
     metric = column_headers[1]
 
     # Make sure time_unit is converted to datetime in order to join in helper_v3
-    time_series_data[time_unit] = time_series_data[time_unit].apply(lambda x: pd.to_datetime(str(x)))
-
+    time_series_data[time_unit] = time_series_data[time_unit].apply(
+        lambda x: pd.to_datetime(str(x)))
 
     #print([time_unit,metric])
 
@@ -150,7 +150,8 @@ def update_chart(message):
     y = time_series_data[metric].tolist()
 
     # Use Facebook Prophet through forecastr method
-    forecast = forecastr(time_series_data,forecast_settings,column_headers,freq,build_settings)
+    forecast = forecastr(time_series_data, forecast_settings, column_headers,
+                         freq, build_settings)
 
     # Need to convert forecast back into a list / array for y, y_hat and date so it can be properly graphed with chartjs
     y_hat = forecast[0]
@@ -161,14 +162,16 @@ def update_chart(message):
     forecasted_vals_mean = forecast[5]
 
     # Send data back to the client - took out original dataset
-    data_back_to_client = [dates,y_hat,y,forecast_settings,column_headers,freq,original_dataset,csv_export,forecasted_vals, forecasted_vals_mean]
+    data_back_to_client = [
+        dates, y_hat, y, forecast_settings, column_headers, freq,
+        original_dataset, csv_export, forecasted_vals, forecasted_vals_mean
+    ]
     emit('render_forecast_chart', {'data': data_back_to_client})
 
     # Validate Model
     #mape_score = validate_model(model,dates)
 
     #emit('model_validation', {'data':mape_score})
-
 
 
 @socketio.on('reset')
@@ -200,16 +203,19 @@ def main(message):
     timeframe = determine_timeframe(data, time_unit)
 
     # Get summary statistics about original dataset
-    summary_stats = get_summary_stats(data,column_headers)
+    summary_stats = get_summary_stats(data, column_headers)
 
     # Send original data to a list
     dimension = data[time_unit].tolist()
     metric = data[metric_unit].tolist()
 
-    original_data = [dimension,metric]
+    original_data = [dimension, metric]
 
     # Send data back to the client in the form of a label detected or text extracted.
-    emit('render_uploaded_csv_data', {'data': [column_headers,message, timeframe, summary_stats,original_data]})
+    emit('render_uploaded_csv_data', {
+        'data':
+        [column_headers, message, timeframe, summary_stats, original_data]
+    })
 
 
 if __name__ == '__main__':
